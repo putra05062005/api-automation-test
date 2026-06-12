@@ -1,3 +1,4 @@
+![CI](https://github.com/putra05062005/api-automation-test/actions/workflows/ci.yml/badge.svg)
 # 🚀 API Automation Testing Project
 
 ## 📌 Description
