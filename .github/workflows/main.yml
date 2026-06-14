@@ -1,35 +1,50 @@
-name: API Automation Test CI
+name: API Automation CI
 
 on:
 push:
-branches: [ "main" ]
+branches: [ main ]
+
 pull_request:
-branches: [ "main" ]
+branches: [ main ]
 
 jobs:
-test:
+api-test:
 runs-on: ubuntu-latest
 
 ```
 steps:
-- name: Checkout repository
-  uses: actions/checkout@v4
+  - name: Checkout Repository
+    uses: actions/checkout@v4
 
-- name: Setup Java
-  uses: actions/setup-java@v4
-  with:
-    distribution: 'temurin'
-    java-version: '17'
+  - name: Setup Java 17
+    uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: '17'
 
-- name: Grant execute permission for gradlew
-  run: chmod +x gradlew
+  - name: Grant Execute Permission
+    run: chmod +x gradlew
 
-- name: Run API Automation Test
-  run: ./gradlew test
+  - name: Run API Tests
+    run: ./gradlew clean test
 
-- name: Upload Test Report
-  uses: actions/upload-artifact@v4
-  with:
-    name: test-report
-    path: app/build/reports/tests/test/
+  - name: Upload HTML Test Report
+    if: always()
+    uses: actions/upload-artifact@v4
+    with:
+      name: html-test-report
+      path: app/build/reports/tests/test/
+
+  - name: Upload JUnit XML Report
+    if: always()
+    uses: actions/upload-artifact@v4
+    with:
+      name: junit-xml-report
+      path: app/build/test-results/test/
+
+  - name: Publish Test Summary
+    if: always()
+    uses: test-summary/action@v2
+    with:
+      paths: "app/build/test-results/test/*.xml"
 ```
