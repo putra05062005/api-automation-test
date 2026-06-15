@@ -3,6 +3,8 @@ name: API Automation CI
 on:
 push:
 branches: [ "main" ]
+pull_request:
+branches: [ "main" ]
 
 jobs:
 test:
@@ -10,51 +12,37 @@ runs-on: ubuntu-latest
 
 ```
 steps:
-  - name: Checkout Code
+  - name: Checkout Repository
     uses: actions/checkout@v4
 
-  - name: Setup Java
+  - name: Setup Java 17
     uses: actions/setup-java@v4
     with:
-      distribution: 'temurin'
+      distribution: temurin
       java-version: '17'
 
-  - name: Permission
+  - name: Grant Execute Permission
     run: chmod +x gradlew
 
-  - name: Run Test
+  - name: Run API Automation Tests
     run: ./gradlew clean test
 
-  - name: Debug Folder
+  - name: Debug Build Folder
     run: |
-      echo "CHECK BUILD FOLDER"
+      echo "=== CHECK BUILD FOLDER ==="
       ls -R app/build || true
 
-  - name: Upload Report HTML
+  - name: Upload HTML Test Report
     if: always()
     uses: actions/upload-artifact@v4
     with:
       name: html-report
-      path: app/build/reports/tests/test
+      path: app/build/reports/tests/test/index.html
 
-  - name: Upload Report XML
+  - name: Upload JUnit XML Report
     if: always()
     uses: actions/upload-artifact@v4
     with:
-      name: xml-report
-      path: app/build/test-results/test
+      name: junit-report
+      path: app/build/test-results/test/
 
-
-  - name: Upload HTML Report
-    if: always()
-    uses: actions/upload-artifact@v4
-    with:
-    name: html-report
-    path: app/build/reports/tests/test/
-
-  - name: Upload XML Report
-    if: always()
-    uses: actions/upload-artifact@v4
-    with:
-    name: xml-report
-    path: app/build/test-results/test/
