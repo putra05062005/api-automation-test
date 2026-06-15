@@ -43,4 +43,18 @@ steps:
     with:
       name: xml-report
       path: app/build/test-results/test
-```
+
+
+  - name: Upload HTML Report
+    if: always()
+    uses: actions/upload-artifact@v4
+    with:
+    name: html-report
+    path: app/build/reports/tests/test/
+
+  - name: Upload XML Report
+    if: always()
+    uses: actions/upload-artifact@v4
+    with:
+    name: xml-report
+    path: app/build/test-results/test/
